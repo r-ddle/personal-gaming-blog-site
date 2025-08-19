@@ -20,13 +20,13 @@ async function getPosts(): Promise<GameLogPostData[]> {
       take: 3
     });
 
-    return posts.map(post => ({
+  return posts.map((post: any) => ({
       id: post.id,
       title: post.title,
       game: post.game,
       platform: post.platform,
       content: post.content,
-      mediaItems: post.mediaItems.map(media => ({
+  mediaItems: post.mediaItems.map((media: any) => ({
         type: media.type as 'screenshot' | 'video' | 'youtube',
         url: media.url,
         caption: media.caption || undefined
@@ -51,7 +51,7 @@ async function getRants(): Promise<QuickRantData[]> {
       take: 5
     });
 
-    return rants.map(rant => ({
+  return rants.map((rant: any) => ({
       id: rant.id,
       game: rant.game,
       content: rant.content,
@@ -106,7 +106,7 @@ async function getGameStats() {
 
     // Calculate total playtime (assumes format like "45 hours", "120h", etc.)
     let totalHours = 0;
-    posts.forEach(post => {
+  posts.forEach((post: any) => {
       if (post.playtime) {
         const match = post.playtime.match(/(\d+)/);
         if (match) {
@@ -141,7 +141,7 @@ async function getRecentGames() {
       take: 5
     });
 
-    return games.map(game => ({
+  return games.map((game: any) => ({
       title: game.game,
       platform: game.platform,
       status: 'Completed', // We could add a status field to the schema later
@@ -174,7 +174,7 @@ async function getLatestScreenshots() {
       take: 4
     });
 
-    return screenshots.map(screenshot => ({
+  return screenshots.map((screenshot: any) => ({
       url: screenshot.url,
       caption: screenshot.caption || `${screenshot.post.game} screenshot`,
       game: screenshot.post.game
@@ -268,7 +268,7 @@ export default async function Home() {
             <h3>Recent Games</h3>
           </div>
           <div className="recent-games-list">
-            {recentGames.slice(0, 2).map((game, index) => (
+            {recentGames.slice(0, 2).map((game: any, index: number) => (
               <div key={index} className="recent-game-item">
                 <div className="game-placeholder small"></div>
                 <div>

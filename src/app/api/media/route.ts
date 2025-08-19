@@ -1,8 +1,11 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+
 export async function GET() {
   try {
+
     const mediaItems = await prisma.mediaItem.findMany({
       include: {
         post: {
@@ -19,7 +22,15 @@ export async function GET() {
       }
     });
 
-    const formattedMedia = mediaItems.map(item => ({
+    type MediaWithPost = {
+      id: string;
+      type: string;
+      url: string;
+      caption?: string | null;
+      postId: string;
+      post: { game: string; title: string };
+    };
+    const formattedMedia = (mediaItems as MediaWithPost[]).map((item) => ({
       id: item.id,
       type: item.type,
       url: item.url,
@@ -38,7 +49,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    
+
     if (!data.url || !data.caption || !data.game || !data.type) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
@@ -48,19 +59,19 @@ export async function POST(request: NextRequest) {
       if (url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)/)) {
         return 'youtube';
       }
-      
+
       const imageExtensions = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i;
       const imageHosts = /(imgur\.com|i\.imgur\.com|cdn\.discordapp\.com|steamuserimages)/i;
-      
+
       if (imageExtensions.test(url) || imageHosts.test(url)) {
         return 'screenshot';
       }
-      
+
       const videoExtensions = /\.(mp4|webm|avi|mov|wmv|flv|mkv)(\?.*)?$/i;
       if (videoExtensions.test(url)) {
         return 'video';
       }
-      
+
       return selectedType;
     };
 
@@ -131,7 +142,7 @@ export async function DELETE(request: NextRequest) {
 
     const post = await prisma.gamePost.findUnique({
       where: { id: mediaItem.postId },
-      select: { 
+      select: {
         title: true,
         content: true
       }

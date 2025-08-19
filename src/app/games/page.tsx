@@ -14,13 +14,13 @@ async function getAllPosts(): Promise<GameLogPostData[]> {
       }
     });
 
-    return posts.map(post => ({
+  return posts.map((post: any) => ({
       id: post.id,
       title: post.title,
       game: post.game,
       platform: post.platform,
       content: post.content,
-      mediaItems: post.mediaItems.map(media => ({
+  mediaItems: post.mediaItems.map((media: any) => ({
         type: media.type as 'screenshot' | 'video' | 'youtube',
         url: media.url,
         caption: media.caption || undefined
@@ -54,8 +54,8 @@ export default async function Games() {
       <div className="blog-games-grid">
         {posts.length > 0 ? (
           posts.map((post, index) => (
-            <div 
-              key={post.id} 
+            <div
+              key={post.id}
               className="slide-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >

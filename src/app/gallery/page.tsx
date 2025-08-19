@@ -28,7 +28,7 @@ async function getGalleryMedia(): Promise<MediaItem[]> {
       }
     });
 
-    return mediaItems.map(item => ({
+  return mediaItems.map((item: any) => ({
       id: item.id,
       type: item.type,
       url: item.url,

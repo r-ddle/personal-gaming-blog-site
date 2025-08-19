@@ -16,7 +16,7 @@ interface GamePageProps {
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getGameLogPost(slug);
-  
+
   if (!post) {
     return {
       title: 'Post Not Found - Tom Riddle\'s Gaming Log',
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
   }
 
   const firstImage = post.mediaItems.find(item => item.type === 'screenshot')?.url;
-  
+
   return {
     title: `${post.title} - ${post.game} | Tom Riddle's Gaming Log`,
     description: post.content.substring(0, 160) + (post.content.length > 160 ? '...' : ''),
@@ -69,7 +69,7 @@ async function getGameLogPost(slug: string): Promise<GameLogPostData | null> {
       game: post.game,
       platform: post.platform,
       content: post.content,
-      mediaItems: post.mediaItems.map(media => ({
+  mediaItems: post.mediaItems.map((media: any) => ({
         type: media.type as 'screenshot' | 'video',
         url: media.url,
         caption: media.caption || undefined
@@ -135,7 +135,7 @@ Still gonna keep playing though because when you pull off an amazing combo or pe
       mood: "frustrated"
     }
   };
-  
+
   return posts[slug] || null;
 };
 
@@ -209,14 +209,14 @@ const getGameData = (slug: string) => {
       ]
     }
   };
-  
+
   return games[slug];
 };
 
 export default async function GamePage({ params }: GamePageProps) {
   const { slug } = await params;
   const post = await getGameLogPost(slug);
-  
+
   if (!post) {
     return (
       <div className="page-container">
@@ -242,7 +242,7 @@ export default async function GamePage({ params }: GamePageProps) {
           </Link>
         </div>
         <div className="page-actions">
-          <ShareButton 
+          <ShareButton
             title={`${post.title} - ${post.game}`}
             description={`Check out my gaming experience with ${post.game}: ${post.content.substring(0, 100)}...`}
           />
@@ -251,14 +251,14 @@ export default async function GamePage({ params }: GamePageProps) {
 
       <div className="game-detail-post">
         <GameLogPost post={post} variant="full" />
-        
+
         <div className="post-engagement">
           <div className="engagement-stats">
             <span className="stat-item">Posted {new Date(post.createdAt).toLocaleDateString()}</span>
             <span className="stat-item">{post.mediaItems.length} media items</span>
             <span className="stat-item">{post.content.split(' ').length} words</span>
           </div>
-          
+
           <div className="post-tags">
             <span className="post-tag">{post.game}</span>
             <span className="post-tag">{post.platform}</span>
