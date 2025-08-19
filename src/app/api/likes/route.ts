@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
     const ipAddress = request.headers.get('x-forwarded-for') || 
                      request.headers.get('x-real-ip') || 
-                     request.ip || 
+                     request.headers.get('remote-addr') ||
                      'unknown';
 
     if (!postId) {

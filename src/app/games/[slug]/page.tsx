@@ -8,13 +8,14 @@ import { Metadata } from "next";
 import { ShareButton } from "@/components/ui/ShareButton";
 
 interface GamePageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
-  const post = await getGameLogPost(params.slug);
+  const { slug } = await params;
+  const post = await getGameLogPost(slug);
   
   if (!post) {
     return {
@@ -213,7 +214,8 @@ const getGameData = (slug: string) => {
 };
 
 export default async function GamePage({ params }: GamePageProps) {
-  const post = await getGameLogPost(params.slug);
+  const { slug } = await params;
+  const post = await getGameLogPost(slug);
   
   if (!post) {
     return (
