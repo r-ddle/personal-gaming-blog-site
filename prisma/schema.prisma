@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GamePost {
+  id        String   @id @default(cuid())
+  title     String
+  game      String
+  gameLogo  String?
+  platform  String
+  content   String
+  playtime  String?
+  rating    Int?
+  mood      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  mediaItems MediaItem[]
+  comments   Comment[]
+  likes      Like[]
+  
+  @@map("game_posts")
+}
+
+model QuickRant {
+  id        String   @id @default(cuid())
+  game      String
+  content   String
+  mood      String
+  createdAt DateTime @default(now())
+  
+  @@map("quick_rants")
+}
+
+model MediaItem {
+  id       String  @id @default(cuid())
+  type     String  // 'screenshot', 'video', 'youtube'
+  url      String
+  caption  String?
+  postId   String
+  
+  post     GamePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@map("media_items")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  username  String
+  content   String
+  postId    String
+  createdAt DateTime @default(now())
+  
+  post      GamePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  userAgent String   // Simple way to track likes without user accounts
+  ipAddress String?  // Additional tracking method
+  createdAt DateTime @default(now())
+
+  post      GamePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userAgent])
+  @@map("likes")
+}
